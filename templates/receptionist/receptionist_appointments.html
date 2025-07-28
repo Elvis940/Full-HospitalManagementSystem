@@ -1,0 +1,518 @@
+{% extends 'receptionist/base.html' %}
+
+{% block title %}Appointments{% endblock %}
+
+{% block extra_head %}
+<!-- FullCalendar CSS -->
+<link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css' rel='stylesheet' />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+<style>
+    @media (max-width: 768px) {
+        #calendar {
+            min-height: 300px !important;
+        }
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .btn {
+            white-space: nowrap;
+        }
+        .fc-toolbar {
+            flex-direction: column;
+        }
+        .fc-toolbar-chunk {
+            margin-bottom: 10px;
+        }
+    }
+    
+    /* Calendar styling */
+    #calendar {
+        background-color: white;
+        border-radius: 0.35rem;
+    }
+    
+    .fc-event {
+        cursor: pointer;
+    }
+    
+    .action-buttons .btn {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+        margin: 0 2px;
+    }
+
+    /* Cancel modal styling */
+    #cancelModal .modal-header {
+        background-color: #dc3545;
+        color: white;
+    }
+    #cancelModal .btn-close {
+        filter: invert(1);
+    }
+    #cancelReason {
+        min-height: 100px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Appointment Management</h1>
+        <button class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#newAppointmentModal">
+            <i class="fas fa-calendar-plus fa-sm"></i> New Appointment
+        </button>
+    </div>
+
+    <!-- New Appointment Modal -->
+    <div class="modal fade" id="newAppointmentModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">New Appointment</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" id="appointmentForm" action="{% url 'receptionist_appointments' %}">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Patient</label>
+                                <select name="patient" class="form-select" required>
+                                    <option value="">Select Patient</option>
+                                    {% for patient in patients %}
+                                    <option value="{{ patient.id }}">{{ patient.full_name }}</option>
+                                    {% empty %}
+                                    <option value="" disabled>No patients available</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Doctor</label>
+                                <select name="doctor" class="form-select" required>
+                                    <option value="">Select Doctor</option>
+                                    {% for doctor in doctors %}
+                                    <option value="{{ doctor.id }}">
+                                        Dr. {{ doctor.username }}
+                                        {% if doctor.first_name or doctor.last_name %}
+                                            ({{ doctor.first_name }} {{ doctor.last_name }})
+                                        {% endif %}
+                                    </option>
+                                    {% empty %}
+                                    <option value="" disabled>No doctors available</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Date</label>
+                                <input type="date" name="date" class="form-control" required id="appointmentDate">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Start Time</label>
+                                <input type="time" name="start_time" class="form-control" required id="startTime">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">End Time</label>
+                                <input type="time" name="end_time" class="form-control" required id="endTime">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Notes</label>
+                            <textarea name="notes" class="form-control" rows="3"></textarea>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary" id="submitAppointment">Schedule</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cancel Appointment Modal -->
+    <div class="modal fade" id="cancelModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Cancel Appointment</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to cancel this appointment for <span id="patientName"></span>?</p>
+                    <div class="mb-3">
+                        <label for="cancelReason" class="form-label">Reason for cancellation</label>
+                        <textarea class="form-control" id="cancelReason" rows="3" required></textarea>
+                        <div class="invalid-feedback">Please provide a reason</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" id="confirmCancel">Confirm Cancellation</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Appointment Calendar -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">Appointment Calendar</h6>
+            <div>
+                <button id="prev-btn" class="btn btn-sm btn-outline-secondary mr-2">
+                    <i class="fas fa-arrow-left"></i> Prev
+                </button>
+                <button id="today-btn" class="btn btn-sm btn-outline-secondary mr-2">
+                    Today
+                </button>
+                <button id="next-btn" class="btn btn-sm btn-outline-secondary">
+                    Next <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+        <div class="card-body">
+            <div id="calendar"></div>
+        </div>
+    </div>
+
+    <!-- Appointments Table -->
+    <div class="card shadow">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">
+                All Appointments (showing complete history)
+            </h6>
+            <div class="dropdown">
+                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" 
+                        id="dateFilterDropdown" data-bs-toggle="dropdown">
+                    Filter by Date
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="?date=today">Today</a></li>
+                    <li><a class="dropdown-item" href="?date=all">Show All</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover" id="appointments-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Start Time</th>
+                            <th>End Time</th>
+                            <th>Patient</th>
+                            <th>Doctor</th>
+                            <th>Notes</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for appointment in todays_appointments %}
+                        <tr>
+                            <td>{{ appointment.date|date:"M j, Y" }}</td>
+                            <td>{{ appointment.start_time|time:"g:i A" }}</td>
+                            <td>{{ appointment.end_time|time:"g:i A" }}</td>
+                            <td>{{ appointment.patient.full_name }}</td>
+                            <td>Dr. {{ appointment.doctor.get_full_name }}</td>
+                            <td>{{ appointment.notes|default:"-"|truncatechars:30 }}</td>
+                            <td>
+                                <span class="badge 
+                                    {% if appointment.status == 'CONFIRMED' %}bg-success
+                                    {% elif appointment.status == 'CANCELLED' %}bg-danger
+                                    {% elif appointment.status == 'COMPLETED' %}bg-primary
+                                    {% else %}bg-warning{% endif %}">
+                                    {{ appointment.get_status_display }}
+                                </span>
+                            </td>
+                            <td class="action-buttons">
+                                <a href="{% url 'view_appointment' appointment.id %}" class="btn btn-sm btn-outline-info" title="View">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="{% url 'edit_appointment' appointment.id %}" class="btn btn-sm btn-outline-primary" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                 </a>
+                              {% if appointment.status != 'CANCELLED' %}
+    <a href="{% url 'confirm_cancel_appointment' appointment.id %}" class="btn btn-sm btn-outline-danger" title="Cancel">
+        <i class="fas fa-times"></i>
+    </a>
+{% endif %}
+                                <a href="{% url 'confirm_delete_appointment' appointment.id %}" class="btn btn-sm btn-outline-danger" title="Delete">
+                                 <i class="fas fa-trash"></i>
+                               </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="8" class="text-center text-muted">
+                                No appointments found in system
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script>
+$(document).ready(function() {
+    // Initialize FullCalendar with enhanced features
+    var calendarEl = document.getElementById('calendar');
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'timeGridWeek',
+        headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        },
+        events: '/receptionist/appointments/calendar-events/',
+        eventClick: function(info) {
+            info.jsEvent.preventDefault();
+            window.location.href = '/receptionist/appointments/' + info.event.id + '/view/';
+        },
+        eventDidMount: function(info) {
+            // Add tooltip
+            $(info.el).tooltip({
+                title: `
+                    <strong>Patient:</strong> ${info.event.extendedProps.patient}<br>
+                    <strong>Doctor:</strong> ${info.event.extendedProps.doctor}<br>
+                    <strong>Status:</strong> ${info.event.extendedProps.status}<br>
+                    <strong>Notes:</strong> ${info.event.extendedProps.notes}
+                `,
+                html: true,
+                placement: 'top',
+                container: 'body'
+            });
+        },
+        editable: true,  // Enable drag-and-drop
+        eventDrop: function(info) {
+            // Handle rescheduling
+            $.ajax({
+                url: `/receptionist/appointments/${info.event.id}/edit/`,
+                type: 'POST',
+                data: {
+                    'date': info.event.startStr.split('T')[0],
+                    'start_time': info.event.startStr.split('T')[1].substring(0, 5),
+                    'end_time': info.event.endStr.split('T')[1].substring(0, 5),
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function(response) {
+                    toastr.success('Appointment rescheduled successfully');
+                    // No need to manually refresh - WebSocket will handle it
+                },
+                error: function(xhr) {
+                    info.revert();
+                    toastr.error('Error rescheduling appointment');
+                }
+            });
+        },
+        selectable: true,  // Enable click-to-create
+        select: function(info) {
+            // Open new appointment modal with pre-filled dates
+            $('#newAppointmentModal').modal('show');
+            $('#appointmentDate').val(info.startStr.split('T')[0]);
+            $('#startTime').val(info.startStr.split('T')[1].substring(0, 5));
+            $('#endTime').val(info.endStr.split('T')[1].substring(0, 5));
+            calendar.unselect();
+        }
+    });
+
+    // Calendar navigation
+    $('#prev-btn').click(function() {
+        calendar.prev();
+    });
+    $('#next-btn').click(function() {
+        calendar.next();
+    });
+    $('#today-btn').click(function() {
+        calendar.today();
+    });
+
+    // WebSocket Connection Manager
+    function setupWebSocket() {
+        const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+        const socketUrl = protocol + window.location.host + '/ws/appointments/';
+        
+        const socket = new WebSocket(socketUrl);
+
+        socket.onopen = function(e) {
+            console.log("WebSocket connection established");
+        };
+
+        socket.onmessage = function(e) {
+            console.log("WebSocket message received:", e.data);
+            try {
+                const data = JSON.parse(e.data);
+                if (data.type === 'appointment.update') {
+                    // Refresh calendar data
+                    calendar.refetchEvents();
+                    
+                    // Show notification
+                    toastr.info('Appointment updated: ' + data.message);
+                    
+                    // Update specific appointment if needed
+                    if (data.status === 'CANCELLED') {
+                        updateAppointmentRow(data.appointment_id, 'CANCELLED');
+                    } else if (data.status === 'CONFIRMED') {
+                        updateAppointmentRow(data.appointment_id, 'CONFIRMED');
+                    }
+                }
+            } catch (err) {
+                console.error("Error processing WebSocket message:", err);
+            }
+        };
+
+        socket.onclose = function(e) {
+            console.log("WebSocket disconnected. Reconnecting in 3 seconds...");
+            setTimeout(setupWebSocket, 3000);
+        };
+
+        socket.onerror = function(err) {
+            console.error("WebSocket error:", err);
+            socket.close();
+        };
+    }
+
+    // Helper function to update appointment row in table
+    function updateAppointmentRow(appointmentId, status) {
+        const row = $(`tr:has(a[href*="/${appointmentId}/view/"])`);
+        if (row.length) {
+            const badge = row.find('.badge');
+            badge.removeClass('bg-warning bg-success bg-danger bg-primary');
+            
+            if (status === 'CANCELLED') {
+                badge.addClass('bg-danger').text('Cancelled');
+            } else if (status === 'CONFIRMED') {
+                badge.addClass('bg-success').text('Confirmed');
+            } else if (status === 'COMPLETED') {
+                badge.addClass('bg-primary').text('Completed');
+            } else {
+                badge.addClass('bg-warning').text('Scheduled');
+            }
+        }
+    }
+
+    // Initialize WebSocket connection
+    setupWebSocket();
+
+    // Initialize calendar
+    calendar.render();
+
+    // Handle new appointment form submission via AJAX
+    $('#appointmentForm').on('submit', function(e) {
+        e.preventDefault();
+        var form = $(this);
+        
+        $.ajax({
+            type: 'POST',
+            url: form.attr('action'),
+            data: form.serialize(),
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            success: function(response) {
+                if (response.success) {
+                    $('#newAppointmentModal').modal('hide');
+                    toastr.success(response.message);
+                    
+                    // Format date for display
+                    var date = new Date(response.appointment.date);
+                    var formattedDate = date.toLocaleDateString('en-US', { 
+                        month: 'short', 
+                        day: 'numeric',
+                        year: 'numeric'
+                    });
+                    
+                    // Create new row
+                    var newRow = `
+                        <tr>
+                            <td>${formattedDate}</td>
+                            <td>${response.appointment.start_time}</td>
+                            <td>${response.appointment.end_time}</td>
+                            <td>${response.appointment.patient}</td>
+                            <td>Dr. ${response.appointment.doctor}</td>
+                            <td>${response.appointment.notes || '-'}</td>
+                            <td><span class="badge bg-success">Confirmed</span></td>
+                            <td class="action-buttons">
+                                <a href="/receptionist/appointments/${response.appointment.id}/view/" class="btn btn-sm btn-outline-info" title="View">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="/receptionist/appointments/${response.appointment.id}/edit/" class="btn btn-sm btn-outline-primary" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="/receptionist/appointments/${response.appointment.id}/cancel/" class="btn btn-sm btn-outline-danger" title="Cancel">
+                                    <i class="fas fa-times"></i>
+                                </a>
+                            </td>
+                        </tr>`;
+                    
+                    // Update table
+                    if ($('#appointments-table tbody tr').length === 0 || 
+                        $('#appointments-table tbody tr td').hasClass('text-center')) {
+                        $('#appointments-table tbody').html(newRow);
+                    } else {
+                        $('#appointments-table tbody').prepend(newRow);
+                    }
+                    
+                    form[0].reset();
+                    
+                    // WebSocket will handle the calendar refresh automatically
+                }
+            },
+            error: function(xhr) {
+                var response = xhr.responseJSON;
+                if (response && !response.success) {
+                    toastr.error(response.error);
+                    
+                    $('.is-invalid').removeClass('is-invalid');
+                    $('.invalid-feedback').remove();
+                    
+                    $.each(response.errors, function(field, errors) {
+                        var fieldElement = $('[name="' + field + '"]');
+                        fieldElement.addClass('is-invalid');
+                        fieldElement.after('<div class="invalid-feedback">' + errors[0].message + '</div>');
+                    });
+                }
+            }
+        });
+    });
+
+    // Handle appointment cancellation (if using modal confirmation)
+    $('#confirmCancel').click(function() {
+        const reason = $('#cancelReason').val();
+        if (!reason) {
+            $('#cancelReason').addClass('is-invalid');
+            return;
+        }
+        
+        const appointmentId = $(this).data('appointment-id');
+        $.ajax({
+            url: `/receptionist/appointments/${appointmentId}/cancel/`,
+            type: 'POST',
+            data: {
+                'reason': reason,
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function(response) {
+                $('#cancelModal').modal('hide');
+                toastr.success(response.message);
+                // WebSocket will handle the updates
+            },
+            error: function(xhr) {
+                toastr.error('Error cancelling appointment');
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

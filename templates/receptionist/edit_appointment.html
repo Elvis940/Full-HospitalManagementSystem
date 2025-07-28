@@ -1,0 +1,138 @@
+{% extends 'receptionist/base.html' %}
+{% load static %}
+
+{% block title %}Edit Appointment{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2 class="mb-0">
+                    <i class="fas fa-calendar-edit mr-2"></i>
+                    Edit Appointment
+                </h2>
+                <a href="{% url 'receptionist_appointments' %}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left mr-2"></i> Back to Appointments
+                    
+                </a>
+            </div>
+            <hr class="mt-2">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header py-3 bg-primary text-white">
+                    <h6 class="m-0 font-weight-bold">
+                        <i class="fas fa-calendar-alt mr-2"></i>Appointment Details
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{% url 'edit_appointment' appointment.id %}" id="editAppointmentForm">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="font-weight-bold">Patient</label>
+                                    <select name="patient" class="form-control" required>
+                                        <option value="">Select Patient</option>
+                                        {% for patient in patients %}
+                                        <option value="{{ patient.id }}" 
+                                            {% if patient.id == appointment.patient.id %}selected{% endif %}>
+                                            {{ patient.full_name }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="font-weight-bold">Doctor</label>
+                                    <select name="doctor" class="form-control" required>
+                                        <option value="">Select Doctor</option>
+                                        {% for doctor in doctors %}
+                                        <option value="{{ doctor.id }}" 
+                                            {% if doctor.id == appointment.doctor.id %}selected{% endif %}>
+                                            Dr. {{ doctor.get_full_name }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="font-weight-bold">Date</label>
+                                    <input type="date" name="date" class="form-control" 
+                                           value="{{ appointment.date|date:'Y-m-d' }}" required>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="font-weight-bold">Start Time</label>
+                                            <input type="time" name="start_time" class="form-control" 
+                                                   value="{{ appointment.start_time|time:'H:i' }}" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="font-weight-bold">End Time</label>
+                                            <input type="time" name="end_time" class="form-control" 
+                                                   value="{{ appointment.end_time|time:'H:i' }}" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="font-weight-bold">Notes</label>
+                            <textarea name="notes" class="form-control" rows="4">{{ appointment.notes }}</textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="font-weight-bold">Status</label>
+                            <select name="status" class="form-control">
+                                {% for value, display in appointment.STATUS_CHOICES %}
+                                <option value="{{ value }}" 
+                                    {% if value == appointment.status %}selected{% endif %}>
+                                    {{ display }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{% url 'receptionist_appointments' %}" class="btn btn-secondary">
+                                <i class="fas fa-times mr-2"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save mr-2"></i> Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    .card-header {
+        border-radius: 0.35rem 0.35rem 0 0 !important;
+    }
+</style>
+
+<script>
+    $(document).ready(function() {
+        // Initialize date picker
+        $('input[type="date"]').flatpickr({
+            dateFormat: "Y-m-d",
+            allowInput: true
+        });
+    });
+</script>
+{% endblock %}

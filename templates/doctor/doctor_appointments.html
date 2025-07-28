@@ -1,0 +1,57 @@
+{% extends 'doctor/base.html' %}
+
+{% block title %}Appointments{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Appointment Calendar</h1>
+        <button class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#newAppointmentModal">
+            <i class="fas fa-calendar-plus fa-sm"></i> New Appointment
+        </button>
+    </div>
+
+    <!-- Calendar View -->
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <div id="doctorCalendar" style="min-height: 600px;">
+                <!-- FullCalendar.js would render here -->
+                <div class="text-center py-5 my-5 text-muted">
+                    <i class="fas fa-calendar-alt fa-3x mb-3"></i>
+                    <h4>Appointment Calendar</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Today's Appointments -->
+    <div class="card shadow">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Today's Schedule</h6>
+        </div>
+        <div class="card-body">
+            <div class="list-group">
+                <a href="#" class="list-group-item list-group-item-action">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="mb-1">09:00 AM - John Smith</h6>
+                            <small class="text-muted">Follow-up visit</small>
+                        </div>
+                        <span class="badge bg-success">Confirmed</span>
+                    </div>
+                </a>
+                <!-- More appointments -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Mobile Adaptations -->
+<style>
+    @media (max-width: 768px) {
+        #doctorCalendar {
+            min-height: 400px !important;
+        }
+    }
+</style>
+{% endblock %}

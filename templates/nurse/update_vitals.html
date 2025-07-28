@@ -1,0 +1,124 @@
+{% extends 'nurse/base.html' %}
+
+{% block title %}Update Vitals{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Patient Vitals</h1>
+        <button class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#vitalsModal">
+            <i class="fas fa-plus"></i> New Reading
+        </button>
+    </div>
+
+    <!-- Vitals Dashboard -->
+    <div class="row">
+        <!-- Abnormal Vitals Card -->
+        <div class="col-md-6 mb-4">
+            <div class="card border-left-danger shadow h-100">
+                <div class="card-header bg-danger text-white py-2">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <strong>Abnormal Readings</strong>
+                        <span class="badge bg-white text-danger">3</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        <a href="#" class="list-group-item list-group-item-action">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <strong>John Smith</strong> (Room 205)
+                                    <div class="text-muted small">BP: 180/110 | Temp: 99.5°F</div>
+                                </div>
+                                <span class="badge bg-danger">Critical</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Due for Check Card -->
+        <div class="col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100">
+                <div class="card-header bg-warning text-dark py-2">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <strong>Due for Check</strong>
+                        <span class="badge bg-white text-warning">5</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        <a href="#" class="list-group-item list-group-item-action">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <strong>Sarah Johnson</strong> (Room 312)
+                                    <div class="text-muted small">Last checked: 2 hours ago</div>
+                                </div>
+                                <span class="badge bg-warning">Overdue</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Vitals Table -->
+    <div class="card shadow">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">Recent Vital Signs</h6>
+            <div class="input-group" style="width: 250px;">
+                <input type="text" class="form-control" placeholder="Search patients...">
+                <button class="btn btn-outline-secondary" type="button">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Patient</th>
+                            <th>BP</th>
+                            <th>Pulse</th>
+                            <th>Temp</th>
+                            <th>O2</th>
+                            <th>Time</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="table-danger">
+                            <td>John Smith</td>
+                            <td>180/110</td>
+                            <td>92</td>
+                            <td>99.5°F</td>
+                            <td>96%</td>
+                            <td>10:15 AM</td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-primary">Edit</button>
+                                <button class="btn btn-sm btn-outline-danger">Flag</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Mobile Adaptations -->
+<style>
+    @media (max-width: 768px) {
+        .card-header .input-group {
+            width: 100% !important;
+            margin-top: 1rem;
+        }
+        .table-responsive {
+            overflow-x: auto;
+        }
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,88 @@
+{% extends 'doctor/base.html' %}
+
+{% block title %}Schedule{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">My Schedule</h1>
+        <div>
+            <button class="btn btn-primary shadow-sm me-2" data-bs-toggle="modal" data-bs-target="#setAvailabilityModal">
+                <i class="fas fa-calendar-plus fa-sm"></i> Set Availability
+            </button>
+            <button class="btn btn-secondary shadow-sm">
+                <i class="fas fa-print fa-sm"></i> Print
+            </button>
+        </div>
+    </div>
+
+    <!-- Weekly Schedule -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">Weekly View</h6>
+                <div class="btn-group">
+                    <button class="btn btn-sm btn-outline-secondary">Week</button>
+                    <button class="btn btn-sm btn-outline-secondary">Month</button>
+                    <button class="btn btn-sm btn-outline-secondary">Day</button>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div id="scheduleView" style="min-height: 500px;">
+                <!-- Schedule visualization would go here -->
+                <div class="text-center py-5 my-5 text-muted">
+                    <i class="fas fa-calendar-week fa-3x mb-3"></i>
+                    <h4>Schedule View</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Availability Settings -->
+    <div class="card shadow">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Default Availability</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Day</th>
+                            <th>Morning</th>
+                            <th>Afternoon</th>
+                            <th>Evening</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Monday</td>
+                            <td><span class="badge bg-success">8:00 AM - 12:00 PM</span></td>
+                            <td><span class="badge bg-success">1:00 PM - 5:00 PM</span></td>
+                            <td><span class="badge bg-secondary">Unavailable</span></td>
+                        </tr>
+                        <!-- More days -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Mobile Adaptations -->
+<style>
+    @media (max-width: 768px) {
+        #scheduleView {
+            min-height: 300px !important;
+        }
+        .d-flex {
+            flex-direction: column;
+        }
+        .btn-group {
+            margin-top: 1rem;
+            align-self: flex-end;
+        }
+    }
+</style>
+{% endblock %}

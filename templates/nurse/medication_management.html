@@ -1,0 +1,96 @@
+{% extends 'nurse/base.html' %}
+
+{% block title %}Medications{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Medication Administration</h1>
+        <button class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#administerModal">
+            <i class="fas fa-syringe"></i> Administer
+        </button>
+    </div>
+
+    <!-- Medication Tabs -->
+    <ul class="nav nav-tabs mb-4" id="medTabs">
+        <li class="nav-item">
+            <a class="nav-link active" data-bs-toggle="tab" href="#dueNow">Due Now (3)</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#nextHour">Next Hour (5)</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#prn">PRN Medications</a>
+        </li>
+    </ul>
+
+    <!-- Tab Content -->
+    <div class="tab-content">
+        <div class="tab-pane fade show active" id="dueNow">
+            <div class="card shadow">
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        <a href="#" class="list-group-item list-group-item-action list-group-item-danger">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">Ibuprofen 400mg</h6>
+                                    <small class="text-muted">John Smith (Room 205) | Overdue by 15 min</small>
+                                </div>
+                                <button class="btn btn-sm btn-success">Administer</button>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Medication History -->
+    <div class="card shadow mt-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Recent Administration</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Medication</th>
+                            <th>Patient</th>
+                            <th>Dose</th>
+                            <th>Time</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Amoxicillin 500mg</td>
+                            <td>Sarah Johnson</td>
+                            <td>1 tablet</td>
+                            <td>09:30 AM</td>
+                            <td><span class="badge bg-success">Given</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Mobile Adaptations -->
+<style>
+    @media (max-width: 768px) {
+        .nav-tabs {
+            overflow-x: auto;
+            flex-wrap: nowrap;
+        }
+        .list-group-item .d-flex {
+            flex-direction: column;
+        }
+        .list-group-item .btn {
+            margin-top: 0.5rem;
+            align-self: flex-end;
+        }
+    }
+</style>
+{% endblock %}

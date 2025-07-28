@@ -1,0 +1,87 @@
+{% extends 'pharmacist/base.html' %}
+
+{% block title %}Pharmacy Reports{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Pharmacy Analytics</h1>
+        <div class="input-group" style="max-width: 300px;">
+            <input type="text" class="form-control date-range-picker" placeholder="Select date range">
+            <button class="btn btn-primary" type="button">
+                <i class="fas fa-calendar-alt"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Report Cards -->
+    <div class="row">
+        <!-- Prescription Volume -->
+        <div class="col-xl-6 mb-4">
+            <div class="card shadow">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-primary">Monthly Prescription Volume</h6>
+                    <select class="form-select form-select-sm" style="width: auto;">
+                        <option>2023</option>
+                        <option>2022</option>
+                    </select>
+                </div>
+                <div class="card-body">
+                    <div class="chart-bar" style="min-height: 250px;">
+                        <!-- Chart.js would go here -->
+                        <p class="text-center py-5 my-5 text-muted">
+                            <i class="fas fa-chart-bar fa-2x d-block mb-2"></i>
+                            Prescription volume chart
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Inventory Turnover -->
+        <div class="col-xl-6 mb-4">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Top Moving Medications</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Medication</th>
+                                    <th>Quantity</th>
+                                    <th>% of Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Metformin 500mg</td>
+                                    <td>1,245</td>
+                                    <td>
+                                        <div class="progress" style="height: 20px;">
+                                            <div class="progress-bar bg-success" style="width: 78%">78%</div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Mobile Adaptations -->
+<style>
+    @media (max-width: 768px) {
+        .date-range-picker {
+            width: 200px !important;
+        }
+        .chart-bar {
+            min-height: 200px !important;
+        }
+    }
+</style>
+{% endblock %}

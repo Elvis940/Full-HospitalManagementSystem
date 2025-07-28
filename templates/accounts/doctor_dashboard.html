@@ -1,0 +1,259 @@
+{% extends 'doctor/base.html' %}
+
+{% block title %}Doctor Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Doctor Dashboard</h1>
+        <div>
+            <a href="#" class="btn btn-sm btn-primary shadow-sm me-2">
+                <i class="fas fa-calendar-alt fa-sm text-white-50"></i> View Schedule
+            </a>
+            <a href="#" class="btn btn-sm btn-info shadow-sm">
+                <i class="fas fa-file-medical fa-sm text-white-50"></i> Quick Report
+            </a>
+        </div>
+    </div>
+
+    <!-- Status Cards -->
+    <div class="row">
+        <!-- Today's Appointments -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card doctor-card doctor-card-primary h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Today's Appointments</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">8</div>
+                            <div class="mt-2 text-xs">
+                                <span class="text-success me-2"><i class="fas fa-arrow-up"></i> 2 new</span>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-calendar-day fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-top-0">
+                    <a href="#" class="text-xs text-primary">View schedule <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Patient Statistics -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card doctor-card h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Active Patients</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">24</div>
+                            <div class="mt-2">
+                                <span class="badge bg-info me-1">5 New</span>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-procedures fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-top-0">
+                    <a href="#" class="text-xs text-success">Patient list <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Prescriptions -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card doctor-card doctor-card-warning h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                Pending Prescriptions</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">3</div>
+                            <div class="mt-2 text-xs">
+                                <span class="text-danger me-2"><i class="fas fa-exclamation-circle"></i> 1 urgent</span>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-prescription-bottle-alt fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-top-0">
+                    <a href="#" class="text-xs text-warning">Review all <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Urgent Cases -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card doctor-card doctor-card-danger h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                Urgent Cases</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">2</div>
+                            <div class="mt-2 text-xs">
+                                <span class="text-white bg-danger px-1">High Priority</span>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-ambulance fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-top-0">
+                    <a href="#" class="text-xs text-danger">View cases <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="row">
+        <!-- Appointments & Quick Actions -->
+        <div class="col-lg-7 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Today's Appointments</h6>
+                    <div class="dropdown no-arrow">
+                        <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end shadow">
+                            <a class="dropdown-item" href="#">View All</a>
+                            <a class="dropdown-item" href="#">Add New</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">Print Schedule</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Patient</th>
+                                    <th>Type</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>09:00 AM</td>
+                                    <td>John Smith</td>
+                                    <td>Follow-up</td>
+                                    <td><span class="badge bg-success">Confirmed</span></td>
+                                    <td><button class="btn btn-sm btn-outline-primary">Start</button></td>
+                                </tr>
+                                <!-- More rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Sidebar - Quick Actions & Alerts -->
+        <div class="col-lg-5 mb-4">
+            <!-- Quick Actions -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Quick Actions</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row g-2">
+                        <div class="col-md-6">
+                            <a href="#" class="btn btn-primary w-100 mb-2 text-start">
+                                <i class="fas fa-prescription-bottle-alt me-2"></i>New Rx
+                                <span class="badge bg-white text-primary ms-2">3</span>
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="#" class="btn btn-success w-100 mb-2 text-start">
+                                <i class="fas fa-file-medical me-2"></i>Reports
+                                <span class="badge bg-white text-success ms-2">2 due</span>
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="#" class="btn btn-info w-100 mb-2 text-start">
+                                <i class="fas fa-user-plus me-2"></i>New Patient
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="#" class="btn btn-warning w-100 mb-2 text-start">
+                                <i class="fas fa-calendar-plus me-2"></i>Schedule
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="#" class="btn btn-secondary w-100 mb-2 text-start">
+                                <i class="fas fa-procedures me-2"></i>Patients
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="#" class="btn btn-dark w-100 mb-2 text-start">
+                                <i class="fas fa-ambulance me-2"></i>Urgent
+                                <span class="badge bg-white text-dark ms-2">2</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recent Activity -->
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Recent Activity</h6>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        <a href="#" class="list-group-item list-group-item-action">
+                            <div class="d-flex justify-content-between">
+                                <span>Completed: John Smith's physical</span>
+                                <small class="text-muted">30 min ago</small>
+                            </div>
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action">
+                            <div class="d-flex justify-content-between">
+                                <span>Prescribed: Amoxicillin 500mg</span>
+                                <small class="text-muted">2 hours ago</small>
+                            </div>
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action">
+                            <div class="d-flex justify-content-between">
+                                <span>New patient: Sarah Johnson</span>
+                                <small class="text-muted">Yesterday</small>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Mobile Adaptations -->
+<style>
+    @media (max-width: 768px) {
+        .d-sm-flex {
+            flex-direction: column;
+        }
+        .card-body .btn {
+            white-space: nowrap;
+        }
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+    }
+</style>
+{% endblock %}

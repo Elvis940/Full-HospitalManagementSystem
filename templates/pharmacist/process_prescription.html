@@ -1,0 +1,84 @@
+{% extends 'pharmacist/base.html' %}
+
+{% block title %}Process Prescriptions{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Prescription Queue</h1>
+        <div class="btn-group">
+            <button class="btn btn-primary shadow-sm dropdown-toggle" data-bs-toggle="dropdown">
+                <i class="fas fa-filter"></i> Filter
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item active" href="#">All</a></li>
+                <li><a class="dropdown-item" href="#">Urgent</a></li>
+                <li><a class="dropdown-item" href="#">Ready for Pickup</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Prescription Cards (Mobile-Friendly) -->
+    <div class="row">
+        <!-- Urgent Prescription Example -->
+        <div class="col-lg-6 mb-4">
+            <div class="card border-left-danger shadow h-100">
+                <div class="card-header bg-danger text-white py-2">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <strong>RX-2023-1892</strong>
+                        <span class="badge bg-white text-danger">URGENT</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">John Smith (ID: 45782)</h5>
+                    <div class="mb-3">
+                        <span class="badge bg-info">New</span>
+                        <span class="badge bg-warning ms-1">Controlled</span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <h6>Medications:</h6>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>Lisinopril 10mg</span>
+                                <span class="text-muted">30 tablets</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Interaction Warning -->
+                    <div class="alert alert-warning p-2 mb-3">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <small>Potential interaction with patient's current medications</small>
+                    </div>
+                    
+                    <div class="d-flex flex-wrap gap-2">
+                        <button class="btn btn-success btn-sm">
+                            <i class="fas fa-check"></i> Approve
+                        </button>
+                        <button class="btn btn-danger btn-sm">
+                            <i class="fas fa-times"></i> Reject
+                        </button>
+                        <button class="btn btn-info btn-sm">
+                            <i class="fas fa-info-circle"></i> Details
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Mobile Optimization -->
+<style>
+    @media (max-width: 576px) {
+        .card-body .d-flex {
+            flex-direction: column;
+            gap: 0.5rem !important;
+        }
+        .card-body .btn {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}

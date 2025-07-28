@@ -1,0 +1,64 @@
+{% extends 'receptionist/base.html' %}
+
+{% block title %}Patient Check-in{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Patient Check-in</h1>
+        <div class="input-group" style="width: 300px;">
+            <input type="text" class="form-control" placeholder="Search patients...">
+            <button class="btn btn-primary" type="button">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Check-in List -->
+    <div class="card shadow">
+        <div class="card-header py-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">Expected Arrivals</h6>
+                <span class="badge bg-primary">8 Patients</span>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Patient</th>
+                            <th>Appt Time</th>
+                            <th>Provider</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>John Smith</td>
+                            <td>09:00 AM</td>
+                            <td>Dr. Johnson</td>
+                            <td><span class="badge bg-secondary">Not Arrived</span></td>
+                            <td><button class="btn btn-sm btn-success">Check In</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Mobile Adaptations -->
+<style>
+    @media (max-width: 768px) {
+        .d-sm-flex .input-group {
+            width: 100% !important;
+            margin-top: 1rem;
+        }
+        .table-responsive {
+            overflow-x: auto;
+        }
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,272 @@
+{% extends 'receptionist/base.html' %}
+
+{% block title %}Receptionist Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header with Quick Stats -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <div>
+            <h1 class="h3 mb-0 text-gray-800">Reception Dashboard</h1>
+            <p class="mb-0 text-muted small">{% now "F j, Y" %} | <span id="currentTime"></span></p>
+        </div>
+        <div class="d-flex">
+            <a href="{% url 'receptionist_appointments' %}" class="btn btn-primary shadow-sm me-2">
+                <i class="fas fa-calendar-plus fa-sm"></i> Appointment
+            </a>
+            <a href="{% url 'patient_registration' %}" class="btn btn-success shadow-sm">
+                <i class="fas fa-user-plus fa-sm"></i> Register Patient
+            </a>
+        </div>
+    </div>
+
+    <!-- Clinic Status Overview -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header py-3 bg-white">
+                    <h6 class="m-0 font-weight-bold text-primary">Clinic Status</h6>
+                </div>
+                <div class="card-body p-0">
+                    <div class="row no-gutters text-center">
+                        <!-- Current Status Cards -->
+                        <div class="col-md-3 border-right">
+                            <div class="p-3">
+                                <div class="text-primary font-weight-bold mb-1">Appointments Today</div>
+                                <div class="h4 mb-0 font-weight-bold">18</div>
+                                <small class="text-success"><i class="fas fa-arrow-up"></i> 2 ahead of schedule</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3 border-right">
+                            <div class="p-3">
+                                <div class="text-success font-weight-bold mb-1">Checked In</div>
+                                <div class="h4 mb-0 font-weight-bold">12</div>
+                                <small class="text-muted">5 waiting to be seen</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3 border-right">
+                            <div class="p-3">
+                                <div class="text-info font-weight-bold mb-1">Walk-ins</div>
+                                <div class="h4 mb-0 font-weight-bold">3</div>
+                                <small class="text-danger">1 waiting >30 min</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="p-3">
+                                <div class="text-warning font-weight-bold mb-1">Total Patients</div>
+                                <div class="h4 mb-0 font-weight-bold">{{ total_patients }}</div>
+                                <small class="text-success">All patients in system</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rest of your template remains exactly the same -->
+    <!-- Main Content Area -->
+    <div class="row">
+        <!-- Left Column - Time-Sensitive Tasks -->
+        <div class="col-lg-7 mb-4">
+            <!-- Immediate Attention Panel -->
+            <div class="card shadow mb-4 border-left-danger">
+                <div class="card-header py-3 bg-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6 class="m-0 font-weight-bold text-danger">
+                            <i class="fas fa-exclamation-circle me-2"></i>Requires Immediate Attention
+                        </h6>
+                        <span class="badge bg-danger">3 Items</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        <a href="#" class="list-group-item list-group-item-action">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">Walk-in waiting >45 min</h6>
+                                    <p class="mb-0 small">Sarah Johnson - Fever evaluation</p>
+                                </div>
+                                <button class="btn btn-sm btn-danger">Resolve</button>
+                            </div>
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">Insurance verification needed</h6>
+                                    <p class="mb-0 small">Michael Brown - Appointment at 10:30 AM</p>
+                                </div>
+                                <button class="btn btn-sm btn-danger">Verify</button>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upcoming Appointments -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between bg-white">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-calendar-alt me-2"></i>Upcoming Appointments
+                    </h6>
+                    <div class="dropdown no-arrow">
+                        <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end shadow">
+                            <a class="dropdown-item" href="#">View All</a>
+                            <a class="dropdown-item" href="#">Print Schedule</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Patient</th>
+                                    <th>Provider</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="table-success">
+                                    <td>09:00 AM</td>
+                                    <td>John Smith</td>
+                                    <td>Dr. Johnson</td>
+                                    <td><span class="badge bg-success">Checked In</span></td>
+                                    <td><button class="btn btn-sm btn-outline-primary">Chart</button></td>
+                                </tr>
+                                <tr class="table-warning">
+                                    <td>09:15 AM</td>
+                                    <td>Emily Davis</td>
+                                    <td>Dr. Wilson</td>
+                                    <td><span class="badge bg-warning">Running Late</span></td>
+                                    <td><button class="btn btn-sm btn-outline-warning">Notify</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column - Quick Actions & Alerts -->
+        <div class="col-lg-5 mb-4">
+            <!-- Quick Actions Panel -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 bg-white">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-bolt me-2"></i>Quick Actions
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row g-2">
+                        <div class="col-md-6">
+                            <a href="#" class="btn btn-primary w-100 mb-2 text-start">
+                                <i class="fas fa-user-plus me-2"></i>Register Patient
+                                <span class="badge bg-white text-primary ms-2">7</span>
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="#" class="btn btn-success w-100 mb-2 text-start">
+                                <i class="fas fa-calendar-plus me-2"></i>New Appointment
+                                <span class="badge bg-white text-success ms-2">3</span>
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="#" class="btn btn-info w-100 mb-2 text-start">
+                                <i class="fas fa-clipboard-check me-2"></i>Check In
+                                <span class="badge bg-white text-info ms-2">5</span>
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="#" class="btn btn-warning w-100 mb-2 text-start">
+                                <i class="fas fa-wheelchair me-2"></i>Walk-ins
+                                <span class="badge bg-white text-warning ms-2">3</span>
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="#" class="btn btn-secondary w-100 mb-2 text-start">
+                                <i class="fas fa-file-invoice-dollar me-2"></i>Billing
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="#" class="btn btn-dark w-100 mb-2 text-start">
+                                <i class="fas fa-phone me-2"></i>Calls
+                                <span class="badge bg-white text-dark ms-2">4</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alerts & Messages -->
+            <div class="card shadow">
+                <div class="card-header py-3 bg-white">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-bell me-2"></i>Alerts & Messages
+                    </h6>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        <a href="#" class="list-group-item list-group-item-action">
+                            <div class="d-flex justify-content-between">
+                                <span>Dr. Johnson running 15 min late</span>
+                                <small class="text-muted">5 min ago</small>
+                            </div>
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action">
+                            <div class="d-flex justify-content-between">
+                                <span>Lab results ready for 2 patients</span>
+                                <small class="text-muted">25 min ago</small>
+                            </div>
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action">
+                            <div class="d-flex justify-content-between">
+                                <span>Insurance authorization needed</span>
+                                <small class="text-muted">1 hour ago</small>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Real-time Clock Script -->
+<script>
+    function updateClock() {
+        const now = new Date();
+        const timeString = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        document.getElementById('currentTime').textContent = timeString;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+</script>
+
+<!-- Mobile Adaptations -->
+<style>
+    @media (max-width: 768px) {
+        .d-sm-flex {
+            flex-direction: column;
+        }
+        .d-sm-flex > div {
+            margin-top: 1rem;
+        }
+        .card-header .dropdown {
+            position: static;
+        }
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .btn {
+            white-space: nowrap;
+        }
+    }
+</style>
+{% endblock %}

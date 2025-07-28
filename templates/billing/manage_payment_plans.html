@@ -1,0 +1,258 @@
+{% extends 'billing/base.html' %}
+
+{% block title %}Payment Plans{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Payment Plans</h1>
+        <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" data-toggle="modal" data-target="#newPlanModal">
+            <i class="fas fa-plus fa-sm text-white-50"></i> Create New Plan
+        </button>
+    </div>
+
+    <!-- Active Plans -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">Active Payment Plans</h6>
+            <div class="dropdown no-arrow">
+                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" 
+                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" 
+                     aria-labelledby="dropdownMenuLink">
+                    <div class="dropdown-header">Filter Plans:</div>
+                    <a class="dropdown-item" href="#">Current</a>
+                    <a class="dropdown-item" href="#">Delinquent</a>
+                    <a class="dropdown-item" href="#">Completed</a>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="paymentPlansTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Patient</th>
+                            <th>Plan Start</th>
+                            <th>Total Amount</th>
+                            <th>Balance</th>
+                            <th>Installments</th>
+                            <th>Next Payment</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>John Smith</td>
+                            <td>10/01/2023</td>
+                            <td>$1,200.00</td>
+                            <td>$800.00</td>
+                            <td>12 monthly</td>
+                            <td>11/01/2023</td>
+                            <td><span class="badge badge-success">Current</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-info" title="View Details">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn btn-sm btn-warning" title="Record Payment">
+                                    <i class="fas fa-money-bill-wave"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Sarah Johnson</td>
+                            <td>09/15/2023</td>
+                            <td>$750.00</td>
+                            <td>$500.00</td>
+                            <td>5 bi-weekly</td>
+                            <td>10/27/2023 <span class="badge badge-danger">Overdue</span></td>
+                            <td><span class="badge badge-warning">Delinquent</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-info" title="View Details">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn btn-sm btn-warning" title="Record Payment">
+                                    <i class="fas fa-money-bill-wave"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Plan Details Modal -->
+    <div class="modal fade" id="planDetailsModal" tabindex="-1" role="dialog" aria-labelledby="planDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="planDetailsModalLabel">Payment Plan Details</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h6>Patient Information</h6>
+                            <p><strong>Name:</strong> John Smith</p>
+                            <p><strong>Account #:</strong> ACCT-12345</p>
+                            <p><strong>Phone:</strong> (555) 123-4567</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Plan Summary</h6>
+                            <p><strong>Start Date:</strong> 10/01/2023</p>
+                            <p><strong>Original Balance:</strong> $1,200.00</p>
+                            <p><strong>Current Balance:</strong> $800.00</p>
+                        </div>
+                    </div>
+
+                    <h6>Payment Schedule</h6>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Due Date</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Paid Date</th>
+                                    <th>Receipt #</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="table-success">
+                                    <td>10/01/2023</td>
+                                    <td>$100.00</td>
+                                    <td>Paid</td>
+                                    <td>10/01/2023</td>
+                                    <td>RCPT-1001</td>
+                                </tr>
+                                <tr class="table-success">
+                                    <td>10/15/2023</td>
+                                    <td>$100.00</td>
+                                    <td>Paid</td>
+                                    <td>10/14/2023</td>
+                                    <td>RCPT-1014</td>
+                                </tr>
+                                <tr class="table-warning">
+                                    <td>11/01/2023</td>
+                                    <td>$100.00</td>
+                                    <td>Pending</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="mt-4">
+                        <h6>Plan Notes</h6>
+                        <div class="card">
+                            <div class="card-body">
+                                <p>Patient agreed to monthly payments of $100. Plan created after discussion about financial hardship.</p>
+                                <p class="mb-0 text-muted small">Created by: Admin User on 10/01/2023</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+                    <button class="btn btn-primary" type="button">Print Agreement</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Plan Modal -->
+    <div class="modal fade" id="newPlanModal" tabindex="-1" role="dialog" aria-labelledby="newPlanModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="newPlanModalLabel">Create New Payment Plan</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="newPlanForm">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label>Patient*</label>
+                                <select class="form-control" required>
+                                    <option value="">Select Patient</option>
+                                    <option>John Smith (MRN: 12345)</option>
+                                    <option>Sarah Johnson (MRN: 12346)</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>Plan Start Date*</label>
+                                <input type="date" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label>Total Amount*</label>
+                                <input type="number" class="form-control" step="0.01" required>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>Initial Payment</label>
+                                <input type="number" class="form-control" step="0.01" value="0.00">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label>Payment Frequency*</label>
+                                <select class="form-control" required>
+                                    <option value="">Select Frequency</option>
+                                    <option>Weekly</option>
+                                    <option>Bi-weekly</option>
+                                    <option>Monthly</option>
+                                    <option>Quarterly</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>Number of Payments*</label>
+                                <input type="number" class="form-control" min="1" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Notes</label>
+                            <textarea class="form-control" rows="3"></textarea>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="sendAgreement">
+                            <label class="form-check-label" for="sendAgreement">
+                                Email payment plan agreement to patient
+                            </label>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <button class="btn btn-primary" type="button">Create Plan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        // Show plan details when view button clicked
+        $('button[title="View Details"]').click(function() {
+            $('#planDetailsModal').modal('show');
+        });
+
+        // Initialize date pickers with default values
+        $('#newPlanModal input[type="date"]').val(new Date().toISOString().substr(0, 10));
+    });
+</script>
+{% endblock %}

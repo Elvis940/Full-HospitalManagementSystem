@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>{% block title %}Receptionist Dashboard{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --sidebar-width: 250px;
+            --sidebar-collapsed-width: 80px;
+            --header-height: 60px;
+            --primary-color: #3498db;
+            --dark-color: #2c3e50;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+            padding-top: var(--header-height);
+            background-color: #f8f9fa;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: var(--header-height);
+            background-color: var(--dark-color);
+            color: white;
+            transition: all 0.3s;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        
+        .sidebar-collapsed {
+            width: var(--sidebar-collapsed-width);
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .sidebar-menu li {
+            position: relative;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .sidebar-menu li a {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .sidebar-menu li a:hover {
+            color: white;
+            background-color: rgba(255,255,255,0.1);
+        }
+        
+        .sidebar-menu li a i {
+            margin-right: 10px;
+            font-size: 1.1rem;
+            min-width: 25px;
+            text-align: center;
+        }
+        
+        .sidebar-menu li a .menu-text {
+            transition: opacity 0.3s;
+        }
+        
+        .sidebar-collapsed .menu-text {
+            opacity: 0;
+            width: 0;
+            display: none;
+        }
+        
+        .sidebar-header {
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            background-color: var(--primary-color);
+        }
+        
+        /* Header Styles */
+        .main-header {
+            height: var(--header-height);
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1030;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+        }
+        
+        .toggle-sidebar {
+            background: none;
+            border: none;
+            color: var(--dark-color);
+            font-size: 1.25rem;
+            cursor: pointer;
+            margin-right: 20px;
+        }
+        
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 20px;
+            transition: all 0.3s;
+            min-height: calc(100vh - var(--header-height));
+        }
+        
+        .content-expanded {
+            margin-left: var(--sidebar-collapsed-width);
+        }
+        
+        /* Active Menu Item */
+        .sidebar-menu li.active a {
+            color: white;
+            background-color: var(--primary-color);
+        }
+        
+        /* Mobile Styles */
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar-mobile-show {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .content-expanded {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="main-header">
+        <button class="toggle-sidebar" id="toggleSidebar">
+            <i class="fas fa-bars"></i>
+        </button>
+        <h5 class="mb-0">Receptionist Portal</h5>
+        <div class="ms-auto d-flex align-items-center">
+            <span class="me-3">Welcome, {{ request.user.get_full_name }}</span>
+            <a href="{% url 'logout' %}" class="btn btn-sm btn-outline-danger">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+    </header>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h6 class="mb-0"><i class="fas fa-headset me-2"></i>RECEPTIONIST</h6>
+        </div>
+        <ul class="sidebar-menu">
+            <li class="active">
+                <a href="{% url 'receptionist_dashboard' %}">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span class="menu-text">Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'patient_registration' %}">
+                    <i class="fas fa-user-plus"></i>
+                    <span class="menu-text">Patient Registration</span>
+                </a>
+            </li>
+              <li>
+                <a href="{% url 'patient_management' %}">
+                    <i class="fas fa-clipboard-check"></i>
+                    <span class="menu-text">Patient Management</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'receptionist_appointments' %}">
+                    <i class="fas fa-calendar-check"></i>
+                    <span class="menu-text">Appointments</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'walk_in_management' %}">
+                    <i class="fas fa-wheelchair"></i>
+                    <span class="menu-text">Walk-in Management</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'patient_checkin' %}">
+                    <i class="fas fa-clipboard-check"></i>
+                    <span class="menu-text">Patient Check-in</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'billing_coordination' %}">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                    <span class="menu-text">Billing Coordination</span>
+                </a>
+            </li>
+        </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        {% block content %}{% endblock %}
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Toggle sidebar collapse/expand
+        document.getElementById('toggleSidebar').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('mainContent');
+            
+            if (window.innerWidth > 992) {
+                sidebar.classList.toggle('sidebar-collapsed');
+                mainContent.classList.toggle('content-expanded');
+            } else {
+                sidebar.classList.toggle('sidebar-mobile-show');
+            }
+        });
+        
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('sidebar');
+            const toggleBtn = document.getElementById('toggleSidebar');
+            
+            if (window.innerWidth <= 992 && 
+                !sidebar.contains(event.target) && 
+                event.target !== toggleBtn && 
+                !toggleBtn.contains(event.target)) {
+                sidebar.classList.remove('sidebar-mobile-show');
+            }
+        });
+        
+        // Highlight active menu item
+        const currentPath = window.location.pathname;
+        document.querySelectorAll('.sidebar-menu li a').forEach(link => {
+            if (link.getAttribute('href') === currentPath) {
+                link.parentElement.classList.add('active');
+            } else {
+                link.parentElement.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>

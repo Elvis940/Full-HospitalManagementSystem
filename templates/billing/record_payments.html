@@ -1,0 +1,193 @@
+{% extends 'billing/base.html' %}
+
+{% block title %}Record Payments{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Record Payment</h1>
+        <a href="{% url 'billing_dashboard' %}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
+            <i class="fas fa-arrow-left fa-sm text-white-50"></i> Back to Dashboard
+        </a>
+    </div>
+
+    <div class="row">
+        <!-- Patient Selection -->
+        <div class="col-lg-12 mb-4">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Patient Account</h6>
+                </div>
+                <div class="card-body">
+                    <div class="form-row">
+                        <div class="col-md-6 mb-3">
+                            <label for="patientSearch">Search Patient</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="patientSearch" placeholder="Name, MRN, or Account #">
+                                <div class="input-group-append">
+                                    <button class="btn btn-primary" type="button" id="searchPatient">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label>Selected Patient</label>
+                            <div class="form-control" id="selectedPatient">
+                                No patient selected
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Outstanding Balances -->
+        <div class="col-lg-7 mb-4">
+            <div class="card shadow">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-primary">Outstanding Balances</h6>
+                    <span class="badge badge-danger">Total Due: $475.00</span>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Invoice #</th>
+                                    <th>Date</th>
+                                    <th>Description</th>
+                                    <th>Amount</th>
+                                    <th>Pay</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>INV-2023-1056</td>
+                                    <td>10/15/2023</td>
+                                    <td>Annual Physical</td>
+                                    <td>$250.00</td>
+                                    <td><input type="number" class="form-control payment-amount" value="250.00" min="0" max="250" step="0.01"></td>
+                                </tr>
+                                <tr>
+                                    <td>INV-2023-1057</td>
+                                    <td>10/20/2023</td>
+                                    <td>Lab Work</td>
+                                    <td>$175.50</td>
+                                    <td><input type="number" class="form-control payment-amount" value="175.50" min="0" max="175.50" step="0.01"></td>
+                                </tr>
+                                <tr>
+                                    <td>INV-2023-1058</td>
+                                    <td>10/22/2023</td>
+                                    <td>Medication</td>
+                                    <td>$49.50</td>
+                                    <td><input type="number" class="form-control payment-amount" value="49.50" min="0" max="49.50" step="0.01"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment Details -->
+        <div class="col-lg-5 mb-4">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Payment Details</h6>
+                </div>
+                <div class="card-body">
+                    <form id="paymentForm">
+                        <div class="form-group">
+                            <label>Payment Method*</label>
+                            <select class="form-control" required>
+                                <option value="">Select Method</option>
+                                <option>Cash</option>
+                                <option>Credit Card</option>
+                                <option>Debit Card</option>
+                                <option>Check</option>
+                                <option>Bank Transfer</option>
+                                <option>Insurance Payment</option>
+                            </select>
+                        </div>
+
+                        <div id="creditCardFields" style="display:none;">
+                            <div class="form-row">
+                                <div class="col-md-12 mb-3">
+                                    <label>Card Number</label>
+                                    <input type="text" class="form-control" placeholder="1234 5678 9012 3456">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label>Expiry</label>
+                                    <input type="text" class="form-control" placeholder="MM/YY">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label>CVV</label>
+                                    <input type="text" class="form-control" placeholder="123">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label>Zip Code</label>
+                                    <input type="text" class="form-control" placeholder="90210">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Payment Amount*</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">$</span>
+                                </div>
+                                <input type="number" class="form-control" id="paymentTotal" value="475.00" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Payment Date</label>
+                            <input type="date" class="form-control" value="{{ current_date }}">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Notes</label>
+                            <textarea class="form-control" rows="2"></textarea>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="printReceipt">
+                            <label class="form-check-label" for="printReceipt">
+                                Print receipt
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn btn-success btn-block">
+                            <i class="fas fa-money-bill-wave"></i> Record Payment
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        // Toggle credit card fields
+        $('select').change(function() {
+            if($(this).val() === 'Credit Card' || $(this).val() === 'Debit Card') {
+                $('#creditCardFields').show();
+            } else {
+                $('#creditCardFields').hide();
+            }
+        });
+
+        // Calculate payment total when amounts change
+        $('.payment-amount').change(function() {
+            let total = 0;
+            $('.payment-amount').each(function() {
+                total += parseFloat($(this).val()) || 0;
+            });
+            $('#paymentTotal').val(total.toFixed(2));
+        });
+    });
+</script>
+{% endblock %}

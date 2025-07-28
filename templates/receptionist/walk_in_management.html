@@ -1,0 +1,76 @@
+{% extends 'receptionist/base.html' %}
+
+{% block title %}Walk-in Management{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Walk-in Patients</h1>
+        <button class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#newWalkinModal">
+            <i class="fas fa-wheelchair fa-sm"></i> New Walk-in
+        </button>
+    </div>
+
+    <!-- Current Walk-ins -->
+    <div class="card shadow">
+        <div class="card-header py-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">Active Walk-ins</h6>
+                <span class="badge bg-primary">5 Waiting</span>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="list-group">
+                <a href="#" class="list-group-item list-group-item-action">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="mb-1">Sarah Johnson</h6>
+                            <small class="text-muted">Arrived: 09:15 AM | Reason: Fever</small>
+                        </div>
+                        <span class="badge bg-warning">Waiting 25 min</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Walk-in Form -->
+    <div class="card shadow mt-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Quick Registration</h6>
+        </div>
+        <div class="card-body">
+            <form class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Patient Name</label>
+                    <input type="text" class="form-control">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Reason for Visit</label>
+                    <select class="form-select">
+                        <option>Select Reason</option>
+                        <option>Illness</option>
+                        <option>Injury</option>
+                    </select>
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">Process Walk-in</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Mobile Adaptations -->
+<style>
+    @media (max-width: 768px) {
+        .list-group-item .d-flex {
+            flex-direction: column;
+        }
+        .list-group-item .badge {
+            margin-top: 0.5rem;
+            align-self: flex-end;
+        }
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,81 @@
+{% extends 'nurse/base.html' %}
+
+{% block title %}Procedure Assistance{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Procedure Management</h1>
+        <button class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#newProcedureModal">
+            <i class="fas fa-plus"></i> New Procedure
+        </button>
+    </div>
+
+    <!-- Procedure Cards -->
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100">
+                <div class="card-header bg-info text-white py-2">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <strong>Scheduled Procedures</strong>
+                        <span class="badge bg-white text-info">5</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        <a href="#" class="list-group-item list-group-item-action">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6 class="mb-1">Wound Dressing Change</h6>
+                                    <small class="text-muted">John Smith (Room 205) | 11:00 AM</small>
+                                </div>
+                                <span class="badge bg-primary">Prep Needed</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100">
+                <div class="card-header bg-success text-white py-2">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <strong>Completed Today</strong>
+                        <span class="badge bg-white text-success">3</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        <a href="#" class="list-group-item list-group-item-action">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6 class="mb-1">IV Insertion</h6>
+                                    <small class="text-muted">Sarah Johnson (Room 312) | 09:30 AM</small>
+                                </div>
+                                <span class="badge bg-success">Completed</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Mobile Adaptations -->
+<style>
+    @media (max-width: 768px) {
+        .d-sm-flex {
+            flex-direction: column;
+        }
+        .card-body .list-group-item .d-flex {
+            flex-direction: column;
+        }
+        .card-body .badge {
+            margin-top: 0.5rem;
+            align-self: flex-end;
+        }
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,333 @@
+{% extends 'pharmacist/base.html' %}
+
+{% block title %}Pharmacist Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Pharmacy Dashboard</h1>
+        <div>
+            <a href="#" class="btn btn-sm btn-primary shadow-sm me-2">
+                <i class="fas fa-prescription fa-sm text-white-50"></i> New Prescription
+            </a>
+            <a href="#" class="btn btn-sm btn-info shadow-sm">
+                <i class="fas fa-chart-line fa-sm text-white-50"></i> View Reports
+            </a>
+        </div>
+    </div>
+
+    <!-- Pharmacy Status Overview -->
+    <div class="row">
+        <!-- Pending Prescriptions -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Pending Prescriptions</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">14</div>
+                            <div class="mt-2 text-xs">
+                                <span class="text-success me-2"><i class="fas fa-arrow-up"></i> 2 new today</span>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-prescription fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-top-0">
+                    <a href="#" class="text-xs text-primary">View all <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Inventory Status -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Total Medications</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">287</div>
+                            <div class="mt-2">
+                                <span class="badge bg-warning me-1">9 Low</span>
+                                <span class="badge bg-danger">3 Critical</span>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-capsules fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-top-0">
+                    <a href="#" class="text-xs text-info">Inventory report <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Drug Interactions -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                Potential Interactions</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">5</div>
+                            <div class="mt-2 text-xs">
+                                <span class="text-danger me-2"><i class="fas fa-exclamation-circle"></i> 2 severe</span>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-top-0">
+                    <a href="#" class="text-xs text-warning">Review interactions <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Supplier Status -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Active Suppliers</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">12</div>
+                            <div class="mt-2 text-xs">
+                                <span class="text-info">2 pending orders</span>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-truck fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-top-0">
+                    <a href="#" class="text-xs text-success">Manage suppliers <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="row">
+        <!-- Prescription Processing -->
+        <div class="col-lg-7 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Prescription Workflow</h6>
+                    <div class="dropdown no-arrow">
+                        <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end shadow">
+                            <a class="dropdown-item" href="#">View All</a>
+                            <a class="dropdown-item" href="#">Add New</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">Generate Report</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-3 col-6 text-center">
+                            <div class="border p-3 rounded bg-light">
+                                <div class="h5 mb-0 font-weight-bold text-primary">14</div>
+                                <small class="text-muted">Pending</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6 text-center">
+                            <div class="border p-3 rounded bg-light">
+                                <div class="h5 mb-0 font-weight-bold text-info">8</div>
+                                <small class="text-muted">In Review</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6 text-center">
+                            <div class="border p-3 rounded bg-light">
+                                <div class="h5 mb-0 font-weight-bold text-warning">3</div>
+                                <small class="text-muted">Issues</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6 text-center">
+                            <div class="border p-3 rounded bg-light">
+                                <div class="h5 mb-0 font-weight-bold text-success">27</div>
+                                <small class="text-muted">Today's Fulfilled</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Rx #</th>
+                                    <th>Patient</th>
+                                    <th>Medication</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>RX-2023-1567</td>
+                                    <td>John Smith</td>
+                                    <td>Lisinopril 10mg</td>
+                                    <td><span class="badge bg-warning">Processing</span></td>
+                                    <td><button class="btn btn-sm btn-outline-primary">Review</button></td>
+                                </tr>
+                                <tr>
+                                    <td>RX-2023-1568</td>
+                                    <td>Sarah Johnson</td>
+                                    <td>Metformin 500mg</td>
+                                    <td><span class="badge bg-info">Pending Review</span></td>
+                                    <td><button class="btn btn-sm btn-outline-primary">Review</button></td>
+                                </tr>
+                                <tr>
+                                    <td>RX-2023-1569</td>
+                                    <td>Michael Brown</td>
+                                    <td>Atorvastatin 20mg</td>
+                                    <td><span class="badge bg-danger">Insurance Issue</span></td>
+                                    <td><button class="btn btn-sm btn-outline-danger">Resolve</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Sidebar - Quick Actions & Alerts -->
+        <div class="col-lg-5 mb-4">
+            <!-- Quick Actions -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Quick Actions</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row g-2">
+                        <div class="col-md-6">
+                            <a href="#" class="btn btn-primary w-100 mb-2 text-start">
+                                <i class="fas fa-prescription me-2"></i>Process Rx
+                                <span class="badge bg-white text-primary ms-2">14</span>
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="#" class="btn btn-success w-100 mb-2 text-start">
+                                <i class="fas fa-capsules me-2"></i>Inventory
+                                <span class="badge bg-white text-success ms-2">12 alerts</span>
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="#" class="btn btn-info w-100 mb-2 text-start">
+                                <i class="fas fa-exclamation-triangle me-2"></i>Check Interactions
+                                <span class="badge bg-white text-info ms-2">5</span>
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="#" class="btn btn-warning w-100 mb-2 text-start">
+                                <i class="fas fa-truck me-2"></i>Suppliers
+                                <span class="badge bg-white text-warning ms-2">2 orders</span>
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="#" class="btn btn-secondary w-100 mb-2 text-start">
+                                <i class="fas fa-chart-pie me-2"></i>Reports
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="#" class="btn btn-dark w-100 mb-2 text-start">
+                                <i class="fas fa-bell me-2"></i>Alerts
+                                <span class="badge bg-white text-dark ms-2">3 new</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Inventory Alerts -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-primary">Inventory Alerts</h6>
+                    <a href="#" class="btn btn-sm btn-outline-primary">Reorder</a>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        <a href="#" class="list-group-item list-group-item-action med-critical">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">Amoxicillin 500mg</h6>
+                                    <small class="text-muted">Antibiotic</small>
+                                </div>
+                                <div class="text-end">
+                                    <div class="text-danger fw-bold">2 left</div>
+                                    <small>Reorder point: 10</small>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action med-low-stock">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">Lisinopril 10mg</h6>
+                                    <small class="text-muted">Hypertension</small>
+                                </div>
+                                <div class="text-end">
+                                    <div class="text-warning fw-bold">5 left</div>
+                                    <small>Reorder point: 10</small>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action med-low-stock">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">Metformin 500mg</h6>
+                                    <small class="text-muted">Diabetes</small>
+                                </div>
+                                <div class="text-end">
+                                    <div class="text-warning fw-bold">8 left</div>
+                                    <small>Reorder point: 15</small>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recent Reports -->
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Recent Reports</h6>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        <a href="#" class="list-group-item list-group-item-action">
+                            <div class="d-flex justify-content-between">
+                                <span>Monthly Prescription Volume</span>
+                                <small class="text-muted">Today</small>
+                            </div>
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action">
+                            <div class="d-flex justify-content-between">
+                                <span>Controlled Substances Log</span>
+                                <small class="text-muted">2 days ago</small>
+                            </div>
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action">
+                            <div class="d-flex justify-content-between">
+                                <span>Inventory Turnover</span>
+                                <small class="text-muted">1 week ago</small>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

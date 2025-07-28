@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>{% block title %}Doctor Dashboard{% endblock %}</title>
+    <link rel="icon" type="image/jpg" href="/static/images/favicon.jpg">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --sidebar-width: 250px;
+            --sidebar-collapsed-width: 80px;
+            --header-height: 60px;
+            --doctor-primary: #3498db;
+            --doctor-secondary: #2c3e50;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+            padding-top: var(--header-height);
+            background-color: #f8f9fa;
+        }
+        
+        /* Doctor-Specific Sidebar */
+        .doctor-sidebar {
+           width: var(--sidebar-width);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: var(--header-height);
+           background-color: var(--doctor-secondary); 
+            color: white;
+            transition: all 0.3s;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        
+        .doctor-sidebar-collapsed {
+             background-color: var(--doctor-primary);
+        }
+        
+        .doctor-sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .doctor-sidebar-menu li {
+            position: relative;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .doctor-sidebar-menu li a {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .doctor-sidebar-menu li a:hover {
+            color: white;
+            background-color: rgba(255,255,255,0.1);
+        }
+        
+        .doctor-sidebar-menu li a i {
+            margin-right: 10px;
+            font-size: 1.1rem;
+            min-width: 25px;
+            text-align: center;
+            color: var(--doctor-primary);
+        }
+        
+        .doctor-sidebar-menu li a .menu-text {
+            transition: opacity 0.3s;
+        }
+        
+        .doctor-sidebar-collapsed .menu-text {
+            opacity: 0;
+            width: 0;
+            display: none;
+        }
+        
+        .doctor-sidebar-header {
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            background-color: var(--doctor-primary);
+            color: white;
+        }
+        
+        /* Doctor Header */
+        .doctor-header {
+            height: var(--header-height);
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1030;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+        }
+        
+        .doctor-toggle-sidebar {
+            background: none;
+            border: none;
+            color: var(--doctor-primary);
+            font-size: 1.25rem;
+            cursor: pointer;
+            margin-right: 20px;
+        }
+        
+        /* Main Content */
+        .doctor-main-content {
+            margin-left: var(--sidebar-width);
+            padding: 20px;
+            transition: all 0.3s;
+            min-height: calc(100vh - var(--header-height));
+        }
+        
+        .doctor-content-expanded {
+            margin-left: var(--sidebar-collapsed-width);
+        }
+        
+        /* Active Menu Item */
+        .doctor-sidebar-menu li.active a {
+             color: white;
+            background-color: var(--doctor-primary);
+        }
+        
+        .doctor-sidebar-menu li.active a i {
+            color: white;
+        }
+        
+        /* Mobile Styles */
+        @media (max-width: 992px) {
+            .doctor-sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .doctor-sidebar-mobile-show {
+                transform: translateX(0);
+            }
+            
+            .doctor-main-content {
+                margin-left: 0;
+            }
+            
+            .doctor-content-expanded {
+                margin-left: 0;
+            }
+        }
+        
+        /* Doctor Specific Cards */
+        .doctor-card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+        }
+        
+        .doctor-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .doctor-card-primary {
+            border-left: 4px solid var(--doctor-primary);
+        }
+        
+        .doctor-card-danger {
+            border-left: 4px solid #e63757;
+        }
+        
+        .doctor-card-warning {
+            border-left: 4px solid #f6c343;
+        }
+    </style>
+</head>
+<body>
+    <!-- Doctor Header -->
+    <header class="doctor-header">
+        <button class="doctor-toggle-sidebar" id="doctorToggleSidebar">
+            <i class="fas fa-bars"></i>
+        </button>
+        <h5 class="mb-0 text-primary">Doctor Portal</h5>
+        <div class="ms-auto d-flex align-items-center">
+            <div class="me-3">
+                <i class="fas fa-bell text-muted"></i>
+                <span class="badge bg-danger rounded-pill position-absolute top-0">3</span>
+            </div>
+            <div class="dropdown">
+                <button class="btn btn-link dropdown-toggle" type="button" id="doctorDropdown" data-bs-toggle="dropdown">
+                    <i class="fas fa-user-circle me-2"></i>
+                    <span>{{ request.user.get_full_name }}</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Profile</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <!-- Doctor Sidebar -->
+    <aside class="doctor-sidebar" id="doctorSidebar">
+        <div class="doctor-sidebar-header d-none d-lg-block">
+            <h6 class="mb-0"><i class="fas fa-user-md me-2"></i>DOCTOR</h6>
+        </div>
+        <ul class="doctor-sidebar-menu">
+            <li class="active">
+                <a href="{% url 'doctor_dashboard' %}">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span class="menu-text">Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'doctor_patients' %}">
+                    <i class="fas fa-procedures"></i>
+                    <span class="menu-text">My Patients</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'doctor_appointments' %}">
+                    <i class="fas fa-calendar-check"></i>
+                    <span class="menu-text">Appointments</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'doctor_prescription' %}">
+                    <i class="fas fa-prescription-bottle-alt"></i>
+                    <span class="menu-text">Prescriptions</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'doctor_schedule' %}">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span class="menu-text">Schedule</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'doctor_medical_reports' %}">
+                    <i class="fas fa-file-medical"></i>
+                    <span class="menu-text">Medical Reports</span>
+                </a>
+            </li>
+        </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="doctor-main-content" id="doctorMainContent">
+        {% block content %}{% endblock %}
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Toggle sidebar for doctor dashboard
+        document.getElementById('doctorToggleSidebar').addEventListener('click', function() {
+            const sidebar = document.getElementById('doctorSidebar');
+            const mainContent = document.getElementById('doctorMainContent');
+            
+            if (window.innerWidth > 992) {
+                // Desktop - toggle between expanded and collapsed
+                sidebar.classList.toggle('doctor-sidebar-collapsed');
+                mainContent.classList.toggle('doctor-content-expanded');
+            } else {
+                // Mobile - toggle sidebar visibility
+                sidebar.classList.toggle('doctor-sidebar-mobile-show');
+            }
+        });
+        
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('doctorSidebar');
+            const toggleBtn = document.getElementById('doctorToggleSidebar');
+            
+            if (window.innerWidth <= 992 && 
+                !sidebar.contains(event.target) && 
+                event.target !== toggleBtn && 
+                !toggleBtn.contains(event.target)) {
+                sidebar.classList.remove('doctor-sidebar-mobile-show');
+            }
+        });
+        
+        // Highlight active menu item
+        const currentPath = window.location.pathname;
+        document.querySelectorAll('.doctor-sidebar-menu li a').forEach(link => {
+            if (link.getAttribute('href') === currentPath) {
+                link.parentElement.classList.add('active');
+            } else {
+                link.parentElement.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>

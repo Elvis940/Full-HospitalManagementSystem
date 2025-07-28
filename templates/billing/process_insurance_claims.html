@@ -1,0 +1,76 @@
+{% extends 'billing/base.html' %}
+
+{% block title %}Process Insurance Claims{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Process Insurance Claim</h1>
+        <div>
+            <a href="{% url 'billing_dashboard' %}" class="btn btn-sm btn-secondary">
+                <i class="fas fa-arrow-left"></i> Dashboard
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Claim Form -->
+        <div class="col-lg-8">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 bg-primary text-white">
+                    <h6 class="m-0 font-weight-bold">Claim Information</h6>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-paper-plane"></i> Submit Claim
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Claim Summary -->
+        <div class="col-lg-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 bg-info text-white">
+                    <h6 class="m-0 font-weight-bold">Claim Summary</h6>
+                </div>
+                <div class="card-body">
+                    <div class="claim-status mb-4">
+                        <h6>Status: <span class="badge badge-warning">New</span></h6>
+                    </div>
+
+                    {% if form.instance.invoice %}
+                    <div class="patient-summary mb-4">
+                        <h6>Patient</h6>
+                        <p class="mb-1">{{ form.instance.invoice.patient }}</p>
+                        <p class="mb-1">DOB: {{ form.instance.invoice.patient.date_of_birth|date:"m/d/Y" }}</p>
+                    </div>
+
+                    <div class="financial-summary">
+                        <h6>Financial</h6>
+                        <table class="table table-sm">
+                            <tr>
+                                <th>Invoice Total:</th>
+                                <td class="text-right">${{ form.instance.invoice.total_amount|floatformat:2 }}</td>
+                            </tr>
+                            <tr>
+                                <th>Paid Amount:</th>
+                                <td class="text-right">${{ form.instance.invoice.paid_amount|floatformat:2 }}</td>
+                            </tr>
+                            <tr>
+                                <th>Balance:</th>
+                                <td class="text-right">${{ form.instance.invoice.balance|floatformat:2 }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

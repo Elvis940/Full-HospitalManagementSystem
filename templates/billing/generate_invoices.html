@@ -1,0 +1,342 @@
+{% extends 'billing/base.html' %}
+
+{% block title %}Generate Invoices{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Generate Invoice</h1>
+        <a href="{% url 'billing_dashboard' %}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
+            <i class="fas fa-arrow-left fa-sm text-white-50"></i> Back to Dashboard
+        </a>
+    </div>
+
+    <div class="row">
+        <!-- Invoice Form -->
+        <div class="col-lg-8">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Invoice Details</h6>
+                </div>
+                <div class="card-body">
+                    <form id="invoiceForm">
+                        <!-- Patient Selection -->
+                        <div class="form-group row mb-4">
+                            <label for="patientSelect" class="col-sm-3 col-form-label">Patient</label>
+                            <div class="col-sm-9">
+                                <select class="form-control select2" id="patientSelect" required>
+                                    <option value="">Select Patient</option>
+                                    <option value="1">John Smith (MRN: 12345)</option>
+                                    <option value="2">Sarah Johnson (MRN: 12346)</option>
+                                    <option value="3">Michael Brown (MRN: 12347)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Invoice Date/Due Date -->
+                        <div class="form-group row">
+                            <div class="col-sm-6 mb-3 mb-sm-0">
+                                <label for="invoiceDate">Invoice Date</label>
+                                <input type="date" class="form-control" id="invoiceDate" value="{{ current_date }}" required>
+                            </div>
+                            <div class="col-sm-6">
+                                <label for="dueDate">Due Date</label>
+                                <input type="date" class="form-control" id="dueDate" required>
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <!-- Services/Items Section -->
+                        <h5 class="mb-3">Services/Items</h5>
+                        <div id="servicesContainer">
+                            <div class="service-item row mb-3">
+                                <div class="col-md-5">
+                                    <select class="form-control service-select">
+                                        <option value="">Select Service/Item</option>
+                                        <option value="consultation">Consultation</option>
+                                        <option value="procedure">Medical Procedure</option>
+                                        <option value="lab">Lab Test</option>
+                                        <option value="medication">Medication</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="number" class="form-control quantity" value="1" min="1">
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="number" class="form-control price" placeholder="Price" step="0.01">
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="button" class="btn btn-danger btn-sm remove-service">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="button" id="addService" class="btn btn-sm btn-primary mb-4">
+                            <i class="fas fa-plus"></i> Add Service
+                        </button>
+
+                        <hr class="my-4">
+
+                        <!-- Insurance Information -->
+                        <div class="form-group">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="insuranceCheck">
+                                <label class="form-check-label" for="insuranceCheck">
+                                    Bill to Insurance
+                                </label>
+                            </div>
+                        </div>
+
+                        <div id="insuranceInfo" style="display: none;">
+                            <div class="form-group row">
+                                <label for="insuranceProvider" class="col-sm-3 col-form-label">Insurance Provider</label>
+                                <div class="col-sm-9">
+                                    <select class="form-control" id="insuranceProvider">
+                                        <option value="">Select Provider</option>
+                                        <option value="aetna">Aetna</option>
+                                        <option value="bluecross">Blue Cross Blue Shield</option>
+                                        <option value="medicare">Medicare</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="policyNumber" class="col-sm-3 col-form-label">Policy Number</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="policyNumber">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Notes -->
+                        <div class="form-group">
+                            <label for="invoiceNotes">Notes</label>
+                            <textarea class="form-control" id="invoiceNotes" rows="2"></textarea>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Invoice Preview -->
+        <div class="col-lg-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Invoice Preview</h6>
+                </div>
+                <div class="card-body">
+                    <div class="invoice-preview">
+                        <div class="text-center mb-4">
+                            <h4>MEDICAL CENTER</h4>
+                            <p class="mb-0">123 Health Street</p>
+                            <p>Anytown, ST 12345</p>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-6">
+                                <strong>Invoice #:</strong> <span id="previewInvoiceNo">INV-0000</span><br>
+                                <strong>Date:</strong> <span id="previewDate">{{ current_date }}</span>
+                            </div>
+                            <div class="col-6 text-right">
+                                <strong>Due Date:</strong> <span id="previewDueDate">{{ due_date }}</span>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <strong>Bill To:</strong>
+                            <div id="previewPatient">[Patient Name]</div>
+                            <div id="previewInsurance" class="text-muted small"></div>
+                        </div>
+
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Description</th>
+                                    <th class="text-right">Qty</th>
+                                    <th class="text-right">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody id="previewServices">
+                                <tr>
+                                    <td colspan="3" class="text-center">No services added</td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="2" class="text-right">Subtotal:</th>
+                                    <th class="text-right" id="previewSubtotal">$0.00</th>
+                                </tr>
+                                <tr>
+                                    <th colspan="2" class="text-right">Tax:</th>
+                                    <th class="text-right" id="previewTax">$0.00</th>
+                                </tr>
+                                <tr>
+                                    <th colspan="2" class="text-right">Total:</th>
+                                    <th class="text-right" id="previewTotal">$0.00</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                        <div class="small text-muted mt-4" id="previewNotes"></div>
+                    </div>
+
+                    <div class="mt-4 d-flex justify-content-between">
+                        <button type="button" class="btn btn-secondary">
+                            <i class="fas fa-save"></i> Save Draft
+                        </button>
+                        <button type="button" class="btn btn-primary">
+                            <i class="fas fa-file-invoice"></i> Generate Invoice
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .select2-container--default .select2-selection--single {
+        height: calc(1.5em + 0.75rem + 2px);
+        padding: 0.375rem 0.75rem;
+    }
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: calc(1.5em + 0.75rem + 2px);
+    }
+    .service-item {
+        align-items: center;
+    }
+    .invoice-preview {
+        font-size: 0.9rem;
+    }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Initialize select2
+        $('.select2').select2();
+        
+        // Toggle insurance information
+        $('#insuranceCheck').change(function() {
+            if(this.checked) {
+                $('#insuranceInfo').show();
+            } else {
+                $('#insuranceInfo').hide();
+            }
+            updatePreview();
+        });
+        
+        // Add new service row
+        $('#addService').click(function() {
+            const newRow = `
+                <div class="service-item row mb-3">
+                    <div class="col-md-5">
+                        <select class="form-control service-select">
+                            <option value="">Select Service/Item</option>
+                            <option value="consultation">Consultation</option>
+                            <option value="procedure">Medical Procedure</option>
+                            <option value="lab">Lab Test</option>
+                            <option value="medication">Medication</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <input type="number" class="form-control quantity" value="1" min="1">
+                    </div>
+                    <div class="col-md-3">
+                        <input type="number" class="form-control price" placeholder="Price" step="0.01">
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-danger btn-sm remove-service">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            $('#servicesContainer').append(newRow);
+            updatePreview();
+        });
+        
+        // Remove service row
+        $(document).on('click', '.remove-service', function() {
+            $(this).closest('.service-item').remove();
+            updatePreview();
+        });
+        
+        // Update preview when inputs change
+        $(document).on('change input', '#patientSelect, #invoiceDate, #dueDate, .service-select, .quantity, .price, #insuranceProvider, #policyNumber, #invoiceNotes', function() {
+            updatePreview();
+        });
+        
+        // Update invoice preview
+        function updatePreview() {
+            // Update patient info
+            const patientText = $('#patientSelect option:selected').text();
+            $('#previewPatient').text(patientText || '[Patient Name]');
+            
+            // Update dates
+            $('#previewDate').text($('#invoiceDate').val() || '{{ current_date }}');
+            $('#previewDueDate').text($('#dueDate').val() || '{{ due_date }}');
+            
+            // Update insurance info
+            if($('#insuranceCheck').is(':checked')) {
+                const provider = $('#insuranceProvider option:selected').text();
+                const policy = $('#policyNumber').val();
+                $('#previewInsurance').html(`<strong>Insurance:</strong> ${provider} ${policy ? `(${policy})` : ''}`);
+            } else {
+                $('#previewInsurance').html('');
+            }
+            
+            // Update services
+            let servicesHtml = '';
+            let subtotal = 0;
+            
+            $('.service-item').each(function() {
+                const service = $(this).find('.service-select option:selected').text();
+                const qty = $(this).find('.quantity').val() || 0;
+                const price = $(this).find('.price').val() || 0;
+                const amount = qty * price;
+                
+                if(service && price > 0) {
+                    servicesHtml += `
+                        <tr>
+                            <td>${service}</td>
+                            <td class="text-right">${qty}</td>
+                            <td class="text-right">$${amount.toFixed(2)}</td>
+                        </tr>
+                    `;
+                    subtotal += amount;
+                }
+            });
+            
+            if(servicesHtml === '') {
+                servicesHtml = '<tr><td colspan="3" class="text-center">No services added</td></tr>';
+            }
+            
+            $('#previewServices').html(servicesHtml);
+            
+            // Calculate totals
+            const tax = subtotal * 0.07; // 7% tax for example
+            const total = subtotal + tax;
+            
+            $('#previewSubtotal').text('$' + subtotal.toFixed(2));
+            $('#previewTax').text('$' + tax.toFixed(2));
+            $('#previewTotal').text('$' + total.toFixed(2));
+            
+            // Update notes
+            $('#previewNotes').text($('#invoiceNotes').val());
+        }
+        
+        // Set default due date (7 days from today)
+        const today = new Date();
+        const dueDate = new Date();
+        dueDate.setDate(today.getDate() + 7);
+        
+        $('#dueDate').val(dueDate.toISOString().split('T')[0]);
+        
+        // Initialize preview
+        updatePreview();
+    });
+</script>
+{% endblock %}

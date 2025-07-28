@@ -1,0 +1,114 @@
+{% extends 'pharmacist/base.html' %}
+
+{% block title %}Medication Inventory{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Medication Inventory</h1>
+        <button class="btn btn-sm btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#addMedModal">
+            <i class="fas fa-plus fa-sm"></i> Add Medication
+        </button>
+    </div>
+
+    <!-- Inventory Controls -->
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6 mb-3 mb-md-0">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search medications...">
+                        <button class="btn btn-primary" type="button">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex flex-wrap justify-content-md-end gap-2">
+                        <div class="dropdown">
+                            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-filter"></i> Filter
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#">All Items</a></li>
+                                <li><a class="dropdown-item" href="#">Low Stock</a></li>
+                                <li><a class="dropdown-item" href="#">Expiring Soon</a></li>
+                            </ul>
+                        </div>
+                        <button class="btn btn-outline-success">
+                            <i class="fas fa-file-export"></i> Export
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Inventory Table -->
+    <div class="card shadow">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Medication</th>
+                            <th>Stock</th>
+                            <th>Batch</th>
+                            <th>Expiry</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Critical Stock Example -->
+                        <tr class="table-danger">
+                            <td>
+                                <strong>Amoxicillin 500mg</strong>
+                                <div class="text-muted small">Antibiotic</div>
+                            </td>
+                            <td>2</td>
+                            <td>#B-2023-156</td>
+                            <td>15/10/2023</td>
+                            <td><span class="badge bg-danger">Critical</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-primary">Reorder</button>
+                            </td>
+                        </tr>
+                        <!-- Low Stock Example -->
+                        <tr class="table-warning">
+                            <td>
+                                <strong>Lisinopril 10mg</strong>
+                                <div class="text-muted small">Hypertension</div>
+                            </td>
+                            <td>5</td>
+                            <td>#B-2023-189</td>
+                            <td>30/12/2023</td>
+                            <td><span class="badge bg-warning">Low</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-primary">Reorder</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Mobile-Friendly Additions -->
+<style>
+    @media (max-width: 768px) {
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .table td, .table th {
+            white-space: nowrap;
+        }
+        .d-sm-flex {
+            flex-direction: column;
+        }
+    }
+</style>
+{% endblock %}

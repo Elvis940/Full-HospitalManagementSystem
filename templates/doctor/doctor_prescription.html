@@ -1,0 +1,73 @@
+{% extends 'doctor/base.html' %}
+
+{% block title %}Prescriptions{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Prescription Management</h1>
+        <button class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#newPrescriptionModal">
+            <i class="fas fa-prescription-bottle-alt fa-sm"></i> New Prescription
+        </button>
+    </div>
+
+    <!-- Prescription Tabs -->
+    <ul class="nav nav-tabs mb-4" id="prescriptionTabs">
+        <li class="nav-item">
+            <a class="nav-link active" data-bs-toggle="tab" href="#active">Active (12)</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#pending">Pending (3)</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#history">History</a>
+        </li>
+    </ul>
+
+    <!-- Tab Content -->
+    <div class="tab-content">
+        <div class="tab-pane fade show active" id="active">
+            <div class="card shadow">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Rx #</th>
+                                    <th>Patient</th>
+                                    <th>Medication</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>RX-2023-1567</td>
+                                    <td>John Smith</td>
+                                    <td>Lisinopril 10mg</td>
+                                    <td>12 Jun 2023</td>
+                                    <td><span class="badge bg-success">Active</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Other tab panes -->
+    </div>
+</div>
+
+<!-- Mobile Adaptations -->
+<style>
+    @media (max-width: 768px) {
+        .nav-tabs {
+            overflow-x: auto;
+            flex-wrap: nowrap;
+        }
+        .table-responsive {
+            overflow-x: auto;
+        }
+    }
+</style>
+{% endblock %}

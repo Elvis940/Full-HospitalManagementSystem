@@ -1,0 +1,73 @@
+{% extends 'pharmacist/base.html' %}
+
+{% block title %}Drug Interactions{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Drug Interaction Checker</h1>
+    </div>
+
+    <!-- Interaction Checker Form -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Check Combinations</h6>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-9 mb-3 mb-md-0">
+                    <select class="form-select select2-multiple" multiple="multiple">
+                        <option selected>Amoxicillin 500mg</option>
+                        <option>Lisinopril 10mg</option>
+                        <option>Metformin 500mg</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button class="btn btn-primary w-100 h-100">
+                        <i class="fas fa-search"></i> Check Interactions
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Section -->
+    <div class="card shadow">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">Interaction Results</h6>
+            <span class="badge bg-danger">3 Severe Interactions Found</span>
+        </div>
+        <div class="card-body">
+            <!-- Severe Interaction Example -->
+            <div class="alert alert-danger mb-3">
+                <div class="d-flex justify-content-between">
+                    <h5 class="alert-heading">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Amoxicillin + Warfarin
+                    </h5>
+                    <span class="badge bg-dark">Severe</span>
+                </div>
+                <hr>
+                <p class="mb-1"><strong>Effect:</strong> Increased risk of bleeding</p>
+                <p class="mb-1"><strong>Recommendation:</strong> Monitor INR closely</p>
+                <button class="btn btn-sm btn-outline-danger mt-2">
+                    View Clinical Details
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Mobile Optimization -->
+<style>
+    @media (max-width: 768px) {
+        .select2-multiple {
+            width: 100% !important;
+        }
+        .card-body .row > div {
+            padding-right: 0 !important;
+            padding-left: 0 !important;
+        }
+    }
+</style>
+{% endblock %}
